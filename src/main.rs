@@ -84,11 +84,36 @@ fn day2_2() -> i32 {
         .sum();
 }
 
+fn day3_1() -> i32 {
+    const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let str = fs::read_to_string("./input3").unwrap();
+    return str
+        .split("\n")
+        .map(|e| e.split_at(e.chars().count() / 2))
+        .map(|e| {
+            for i in e.0.chars() {
+                for j in e.1.chars() {
+                    if i == j {
+                        return (ALPHABET.chars().position(|x| x == i).unwrap() + 1) as i32;
+                    }
+                }
+            }
+            return 0;
+        })
+        .sum();
+}
+
+fn day3_2() -> i32 {
+    return 0;
+}
+
 fn main() {
     day1_1();
     day1_2();
     day2_1();
     day2_2();
+    day3_1();
+    day3_2();
 }
 
 #[cfg(test)]
@@ -117,5 +142,17 @@ mod tests {
     fn test_day2_2() {
         let result = day2_2();
         assert_eq!(result, 15508);
+    }
+
+    #[test]
+    fn test_day3_1() {
+        let result = day3_1();
+        assert_eq!(result, 7785);
+    }
+
+    #[test]
+    fn test_day3_2() {
+        let result = day3_2();
+        assert_eq!(result, 0);
     }
 }
