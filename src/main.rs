@@ -1,26 +1,20 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 
 fn day1_1() -> i32 {
     let contents = fs::read_to_string("./input").unwrap();
-    let mut xs: Vec<i32> = contents
+    return contents
         .split("\n\n")
-        .map(|e| e.split("\n"))
-        .map(|e| e.map(|f| f.parse::<i32>().unwrap_or(0)))
-        .map(|e| e.sum())
-        .collect();
-    xs.sort();
-
-    *xs.last().unwrap()
+        .map(|s| s.lines().map(|f| f.parse::<i32>().unwrap()).sum())
+        .max()
+        .unwrap();
 }
 
 fn day1_2() -> i32 {
     let contents = fs::read_to_string("./input").unwrap();
     let mut xs: Vec<i32> = contents
         .split("\n\n")
-        .map(|e| e.split("\n"))
-        .map(|e| e.map(|f| f.parse().unwrap_or(0)))
-        .map(|e| e.sum())
+        .map(|s| s.lines().map(|f| f.parse::<i32>().unwrap()).sum())
         .collect();
     xs.sort();
 
@@ -47,9 +41,9 @@ const RPC_TABLE: [(i32, i32, i32); 9] = [
     (3, 3, 3),
 ];
 
-fn rock_paper_scissors(a: &str, b: &str) -> i32 {
+fn rock_paper_scissors(move1: &str, move2: &str) -> i32 {
     for e in RPC_TABLE {
-        if e.0 == SCORE_MAP[a] && e.1 == SCORE_MAP[b] {
+        if e.0 == SCORE_MAP[move1] && e.1 == SCORE_MAP[move2] {
             return e.2;
         }
     }
@@ -61,14 +55,14 @@ fn day2_1() -> i32 {
         .unwrap()
         .split("\n")
         .map(|e| e.split_once(" ").unwrap())
-        .map(|e| rock_paper_scissors(e.0, e.1) + SCORE_MAP[e.1])
+        .map(|(move1, move2)| rock_paper_scissors(move1, move2) + SCORE_MAP[move2])
         .sum();
 }
 
-fn rock_paper_scissors_outcome(a: &str, outcome: &str) -> i32 {
+fn rock_paper_scissors_outcome(move1: &str, outcome: &str) -> i32 {
     // get required response (rock, paper or scissors) for a desired outcome score
     for e in RPC_TABLE {
-        if e.0 == SCORE_MAP[a] && e.2 == WIN_MAP[outcome] {
+        if e.0 == SCORE_MAP[move1] && e.2 == WIN_MAP[outcome] {
             return e.1;
         }
     }
@@ -80,21 +74,22 @@ fn day2_2() -> i32 {
         .unwrap()
         .split("\n")
         .map(|e| e.split_once(" ").unwrap())
-        .map(|e| rock_paper_scissors_outcome(e.0, e.1) + WIN_MAP[e.1])
+        .map(|(move1, outcome)| rock_paper_scissors_outcome(move1, outcome) + WIN_MAP[outcome])
         .sum();
 }
 
+const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 fn day3_1() -> i32 {
-    const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let str = fs::read_to_string("./input3").unwrap();
     return str
         .split("\n")
         .map(|e| e.split_at(e.chars().count() / 2))
-        .map(|e| {
-            for i in e.0.chars() {
-                for j in e.1.chars() {
-                    if i == j {
-                        return (ALPHABET.chars().position(|x| x == i).unwrap() + 1) as i32;
+        .map(|(a, b)| {
+            for c1 in a.chars() {
+                for c2 in b.chars() {
+                    if c1 == c2 {
+                        return (ALPHABET.chars().position(|x| x == c1).unwrap() + 1) as i32;
                     }
                 }
             }
@@ -104,6 +99,7 @@ fn day3_1() -> i32 {
 }
 
 fn day3_2() -> i32 {
+    let items = fs::read_to_string("./input3").unwrap().split("\n");
     return 0;
 }
 
