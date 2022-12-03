@@ -32,20 +32,22 @@ extern crate lazy_static;
 lazy_static! {
     static ref SCORE_MAP: HashMap<&'static str, i32> =
         HashMap::from([("A", 1), ("B", 2), ("C", 3), ("X", 1), ("Y", 2), ("Z", 3)]);
+    static ref WIN_MAP: HashMap<&'static str, i32> = HashMap::from([("X", 0), ("Y", 3), ("Z", 6)]);
 }
 
+const RPC_TABLE: [(i32, i32, i32); 9] = [
+    (1, 1, 3),
+    (1, 2, 6),
+    (1, 3, 0),
+    (2, 1, 0),
+    (2, 2, 3),
+    (2, 3, 6),
+    (3, 1, 6),
+    (3, 2, 0),
+    (3, 3, 3),
+];
+
 fn rock_paper_scissors(a: &str, b: &str) -> i32 {
-    const RPC_TABLE: [(i32, i32, i32); 9] = [
-        (1, 1, 3),
-        (1, 2, 6),
-        (1, 3, 0),
-        (2, 1, 0),
-        (2, 2, 3),
-        (2, 3, 6),
-        (3, 1, 6),
-        (3, 2, 0),
-        (3, 3, 3),
-    ];
     for e in RPC_TABLE {
         if e.0 == SCORE_MAP[a] && e.1 == SCORE_MAP[b] {
             return e.2;
@@ -63,10 +65,30 @@ fn day2_1() -> i32 {
         .sum();
 }
 
+fn rock_paper_scissors_outcome(a: &str, outcome: &str) -> i32 {
+    // get required response (rock, paper or scissors) for a desired outcome score
+    for e in RPC_TABLE {
+        if e.0 == SCORE_MAP[a] && e.2 == WIN_MAP[outcome] {
+            return e.1;
+        }
+    }
+    return 0;
+}
+
+fn day2_2() -> i32 {
+    return fs::read_to_string("./input2")
+        .unwrap()
+        .split("\n")
+        .map(|e| e.split_once(" ").unwrap())
+        .map(|e| rock_paper_scissors_outcome(e.0, e.1) + WIN_MAP[e.1])
+        .sum();
+}
+
 fn main() {
     day1_1();
     day1_2();
     day2_1();
+    day2_2();
 }
 
 #[cfg(test)]
@@ -89,5 +111,11 @@ mod tests {
     fn test_day2_1() {
         let result = day2_1();
         assert_eq!(result, 13268);
+    }
+
+    #[test]
+    fn test_day2_2() {
+        let result = day2_2();
+        assert_eq!(result, 15508);
     }
 }
