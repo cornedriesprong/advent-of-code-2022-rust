@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::fs;
 
 fn day1_1() -> i32 {
@@ -53,7 +53,7 @@ fn rock_paper_scissors(move1: &str, move2: &str) -> i32 {
 fn day2_1() -> i32 {
     return fs::read_to_string("./input2")
         .unwrap()
-        .split("\n")
+        .lines()
         .map(|e| e.split_once(" ").unwrap())
         .map(|(move1, move2)| rock_paper_scissors(move1, move2) + SCORE_MAP[move2])
         .sum();
@@ -72,7 +72,7 @@ fn rock_paper_scissors_outcome(move1: &str, outcome: &str) -> i32 {
 fn day2_2() -> i32 {
     return fs::read_to_string("./input2")
         .unwrap()
-        .split("\n")
+        .lines()
         .map(|e| e.split_once(" ").unwrap())
         .map(|(move1, outcome)| rock_paper_scissors_outcome(move1, outcome) + WIN_MAP[outcome])
         .sum();
@@ -83,7 +83,7 @@ const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 fn day3_1() -> i32 {
     let str = fs::read_to_string("./input3").unwrap();
     return str
-        .split("\n")
+        .lines()
         .map(|e| e.split_at(e.chars().count() / 2))
         .map(|(a, b)| {
             for c1 in a.chars() {
@@ -99,8 +99,20 @@ fn day3_1() -> i32 {
 }
 
 fn day3_2() -> i32 {
-    let items = fs::read_to_string("./input3").unwrap().split("\n");
-    return 0;
+    return fs::read_to_string("./input3")
+        .unwrap()
+        .lines()
+        .collect::<Vec<&str>>()
+        .chunks(3)
+        .map(|ch| {
+            for c in ch[0].chars() {
+                if ch[1].contains(c) && ch[2].contains(c) {
+                    return (ALPHABET.chars().position(|x| x == c).unwrap() + 1) as i32;
+                }
+            }
+            return 0;
+        })
+        .sum();
 }
 
 fn main() {
@@ -110,6 +122,7 @@ fn main() {
     day2_2();
     day3_1();
     day3_2();
+    println!("{}", day3_2());
 }
 
 #[cfg(test)]
@@ -149,6 +162,6 @@ mod tests {
     #[test]
     fn test_day3_2() {
         let result = day3_2();
-        assert_eq!(result, 0);
+        assert_eq!(result, 2633);
     }
 }
