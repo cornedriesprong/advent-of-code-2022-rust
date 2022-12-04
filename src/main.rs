@@ -103,7 +103,7 @@ fn day3_2() -> i32 {
         .unwrap()
         .lines()
         .collect::<Vec<&str>>()
-        .chunks(3)
+        .chunks_exact(3)
         .map(|ch| {
             for c in ch[0].chars() {
                 if ch[1].contains(c) && ch[2].contains(c) {
@@ -115,6 +115,26 @@ fn day3_2() -> i32 {
         .sum();
 }
 
+fn day4_1() -> i32 {
+    return fs::read_to_string("./input4")
+        .unwrap()
+        .lines()
+        .map(|line| { 
+            let xs: Vec<Vec<i32>> = line.split(",").map(|e| {
+                e.split("-").map(|e| e.parse::<i32>().unwrap()).collect()
+            }).collect();
+            xs[0][0] >= xs[1][0] && xs[0][1] <= xs[1][1] || xs[1][0] >= xs[0][0] && xs[1][1] <= xs[0][1]
+        })
+        .filter(|b| *b)
+        .collect::<Vec<bool>>()
+        .len() as i32;
+}
+
+fn day4_2() -> i32 {
+    return 0;
+}
+
+
 fn main() {
     day1_1();
     day1_2();
@@ -122,7 +142,9 @@ fn main() {
     day2_2();
     day3_1();
     day3_2();
-    println!("{}", day3_2());
+    day3_2();
+    day4_1();
+    day4_2();
 }
 
 #[cfg(test)]
@@ -163,5 +185,17 @@ mod tests {
     fn test_day3_2() {
         let result = day3_2();
         assert_eq!(result, 2633);
+    }
+
+    #[test]
+    fn test_day4_1() {
+        let result = day4_1();
+        assert_eq!(result, 305);
+    }
+
+    #[test]
+    fn test_day4_2() {
+        let result = day4_2();
+        assert_eq!(result, 0);
     }
 }
