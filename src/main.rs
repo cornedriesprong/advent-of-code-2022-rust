@@ -115,23 +115,47 @@ fn day3_2() -> i32 {
         .sum();
 }
 
+fn fully_contained(lhs: (i32, i32), rhs: (i32, i32)) -> bool {
+    lhs.0 >= rhs.0 && lhs.1 <= rhs.1 ||
+        rhs.0 >= lhs.0 && rhs.1 <= lhs.1
+}
+
 fn day4_1() -> i32 {
     return fs::read_to_string("./input4")
         .unwrap()
         .lines()
         .map(|line| { 
-            let xs: Vec<Vec<i32>> = line.split(",").map(|e| {
-                e.split("-").map(|e| e.parse::<i32>().unwrap()).collect()
-            }).collect();
-            xs[0][0] >= xs[1][0] && xs[0][1] <= xs[1][1] || xs[1][0] >= xs[0][0] && xs[1][1] <= xs[0][1]
+            let (a, b) = line.split_once(",").unwrap();
+            let lhs_min = a.split_once("-").unwrap().0.parse::<i32>().unwrap();
+            let lhs_max = a.split_once("-").unwrap().1.parse::<i32>().unwrap();
+            let rhs_min = b.split_once("-").unwrap().0.parse::<i32>().unwrap();
+            let rhs_max = b.split_once("-").unwrap().1.parse::<i32>().unwrap();
+            fully_contained((lhs_min, lhs_max), (rhs_min, rhs_max))
         })
         .filter(|b| *b)
         .collect::<Vec<bool>>()
         .len() as i32;
 }
 
+fn overlaps(lhs: (i32, i32), rhs: (i32, i32)) -> bool {
+    !(lhs.1 < rhs.0 || lhs.0 > rhs.1)
+}
+
 fn day4_2() -> i32 {
-    return 0;
+    return fs::read_to_string("./input4")
+        .unwrap()
+        .lines()
+        .map(|line| { 
+            let (a, b) = line.split_once(",").unwrap();
+            let lhs_min = a.split_once("-").unwrap().0.parse::<i32>().unwrap();
+            let lhs_max = a.split_once("-").unwrap().1.parse::<i32>().unwrap();
+            let rhs_min = b.split_once("-").unwrap().0.parse::<i32>().unwrap();
+            let rhs_max = b.split_once("-").unwrap().1.parse::<i32>().unwrap();
+            overlaps((lhs_min, lhs_max), (rhs_min, rhs_max))
+        })
+        .filter(|b| *b)
+        .collect::<Vec<bool>>()
+        .len() as i32;
 }
 
 
@@ -145,6 +169,7 @@ fn main() {
     day3_2();
     day4_1();
     day4_2();
+    println!("{}", day4_2());
 }
 
 #[cfg(test)]
@@ -196,6 +221,6 @@ mod tests {
     #[test]
     fn test_day4_2() {
         let result = day4_2();
-        assert_eq!(result, 0);
+        assert_eq!(result, 811);
     }
 }
