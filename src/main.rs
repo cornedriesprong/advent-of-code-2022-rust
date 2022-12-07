@@ -1,3 +1,4 @@
+use regex::Regex;
 use std::collections::HashMap;
 use std::fs;
 
@@ -116,15 +117,14 @@ fn day3_2() -> i32 {
 }
 
 fn fully_contained(lhs: (i32, i32), rhs: (i32, i32)) -> bool {
-    lhs.0 >= rhs.0 && lhs.1 <= rhs.1 ||
-        rhs.0 >= lhs.0 && rhs.1 <= lhs.1
+    lhs.0 >= rhs.0 && lhs.1 <= rhs.1 || rhs.0 >= lhs.0 && rhs.1 <= lhs.1
 }
 
 fn day4_1() -> i32 {
     return fs::read_to_string("./input4")
         .unwrap()
         .lines()
-        .map(|line| { 
+        .map(|line| {
             let (a, b) = line.split_once(",").unwrap();
             let lhs_min = a.split_once("-").unwrap().0.parse::<i32>().unwrap();
             let lhs_max = a.split_once("-").unwrap().1.parse::<i32>().unwrap();
@@ -145,7 +145,7 @@ fn day4_2() -> i32 {
     return fs::read_to_string("./input4")
         .unwrap()
         .lines()
-        .map(|line| { 
+        .map(|line| {
             let (a, b) = line.split_once(",").unwrap();
             let lhs_min = a.split_once("-").unwrap().0.parse::<i32>().unwrap();
             let lhs_max = a.split_once("-").unwrap().1.parse::<i32>().unwrap();
@@ -158,6 +158,55 @@ fn day4_2() -> i32 {
         .len() as i32;
 }
 
+fn day5_1() -> String {
+    let text = fs::read_to_string("./input5").unwrap();
+    let (stack_str, moves_str) = text.split_once("\n\n").unwrap();
+
+    let mut stacks: Vec<Vec<char>> = vec![vec![]; 9];
+    stack_str.lines().rev().skip(1).for_each(|line| {
+        line.chars()
+            .skip(1)
+            .step_by(4)
+            .enumerate()
+            .for_each(|(i, c)| {
+                if !c.is_whitespace() {
+                    stacks[i].push(c);
+                };
+            })
+    });
+
+    let moves = moves_str
+        .lines()
+        .map(|line| {
+            let re = Regex::new(r"\d+").unwrap();
+            let xs = re
+                .find_iter(line)
+                .map(|e| e.as_str().parse::<i32>().unwrap())
+                .collect::<Vec<i32>>();
+            assert!(xs.len() == 3);
+            xs
+        })
+        .collect::<Vec<Vec<i32>>>();
+
+    for mv in moves {
+        let amount = mv[0] as usize;
+        let from = (mv[1] - 1) as usize;
+        let to = (mv[2] - 1) as usize;
+        for _ in 0..amount {
+            let crt = stacks[from].pop().unwrap();
+            stacks[to].push(crt);
+        }
+    }
+
+    return stacks
+        .iter()
+        .map(|s| *s.last().unwrap())
+        .collect::<String>();
+}
+
+fn day5_2() -> i32 {
+    return 0;
+}
 
 fn main() {
     day1_1();
@@ -169,7 +218,8 @@ fn main() {
     day3_2();
     day4_1();
     day4_2();
-    println!("{}", day4_2());
+    day5_1();
+    day5_2();
 }
 
 #[cfg(test)]
@@ -222,5 +272,17 @@ mod tests {
     fn test_day4_2() {
         let result = day4_2();
         assert_eq!(result, 811);
+    }
+
+    #[test]
+    fn test_day5_1() {
+        let result = day5_1();
+        assert_eq!(result, "NTWZZWHFV");
+    }
+
+    #[test]
+    fn test_day5_2() {
+        let result = day5_2();
+        assert_eq!(result, 0);
     }
 }
