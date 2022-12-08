@@ -179,26 +179,25 @@ fn get_moves(input: &str) -> Vec<Vec<i32>> {
         .lines()
         .map(|line| {
             let re = Regex::new(r"\d+").unwrap();
-            let xs = re
+            return re
                 .find_iter(line)
                 .map(|e| e.as_str().parse::<i32>().unwrap())
-                .collect::<Vec<i32>>();
-            xs
+                .collect();
         })
         .collect();
 }
 
-fn move_stacks(stacks: &mut Vec<Vec<char>>, moves: Vec<Vec<i32>>, model: i32) {
+fn move_stacks(stacks: &mut Vec<Vec<char>>, moves: Vec<Vec<i32>>, crane_model: i32) {
     for mv in moves {
         let amount = mv[0] as usize;
         let from = (mv[1] - 1) as usize;
         let to = (mv[2] - 1) as usize;
-        if model == 9000 {
+        if crane_model == 9000 {
             for _ in 0..amount {
                 let crt = stacks[from].pop().unwrap();
                 stacks[to].push(crt);
             }
-        } else if model == 9001 {
+        } else if crane_model == 9001 {
             let split_index = stacks[from].len() - amount;
             let crt = stacks[from].split_off(split_index);
             for e in crt {
