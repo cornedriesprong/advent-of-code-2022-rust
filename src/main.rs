@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 
 fn day1_1() -> i32 {
@@ -233,6 +233,25 @@ fn day5_2() -> String {
         .collect::<String>();
 }
 
+fn day6_1() -> i32 {
+    let chars: Vec<char> = fs::read_to_string("./input6").unwrap().chars().collect();
+    let offset = 3;
+    for i in 0..(chars.len() - offset) {
+        let mut set: HashSet<char> = HashSet::new();
+        for j in 0..4 {
+            set.insert(chars[i + j]);
+        }
+        if set.len() == 4 {
+            return (i + offset) as i32 + 1;
+        }
+    }
+    return 0;
+}
+
+fn day6_2() -> i32 {
+    return 0;
+}
+
 fn main() {
     day1_1();
     day1_2();
@@ -245,6 +264,7 @@ fn main() {
     day4_2();
     day5_1();
     day5_2();
+    println!("Day 6.1: {}", day6_1());
 }
 
 #[cfg(test)]
@@ -309,5 +329,15 @@ mod tests {
     fn test_day5_2() {
         let result = day5_2();
         assert_eq!(result, "BRZGFVBTJ");
+    }
+
+    fn test_day6_1() {
+        let result = day6_1();
+        assert_eq!(result, 1779);
+    }
+
+    fn test_day6_2() {
+        let result = day6_2();
+        assert_eq!(result, 0);
     }
 }
