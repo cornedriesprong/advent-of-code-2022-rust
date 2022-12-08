@@ -158,12 +158,9 @@ fn day4_2() -> i32 {
         .len() as i32;
 }
 
-fn day5_1() -> String {
-    let text = fs::read_to_string("./input5").unwrap();
-    let (stack_str, moves_str) = text.split_once("\n\n").unwrap();
-
+fn get_stacks(input: &str) -> Vec<Vec<char>> {
     let mut stacks: Vec<Vec<char>> = vec![vec![]; 9];
-    stack_str.lines().rev().skip(1).for_each(|line| {
+    input.lines().rev().skip(1).for_each(|line| {
         line.chars()
             .skip(1)
             .step_by(4)
@@ -174,8 +171,11 @@ fn day5_1() -> String {
                 };
             })
     });
+    stacks
+}
 
-    let moves = moves_str
+fn get_moves(input: &str) -> Vec<Vec<i32>> {
+    return input
         .lines()
         .map(|line| {
             let re = Regex::new(r"\d+").unwrap();
@@ -183,20 +183,37 @@ fn day5_1() -> String {
                 .find_iter(line)
                 .map(|e| e.as_str().parse::<i32>().unwrap())
                 .collect::<Vec<i32>>();
-            assert!(xs.len() == 3);
             xs
         })
-        .collect::<Vec<Vec<i32>>>();
+        .collect();
+}
 
+fn move_stacks(stacks: &mut Vec<Vec<char>>, moves: Vec<Vec<i32>>, model: i32) {
     for mv in moves {
         let amount = mv[0] as usize;
         let from = (mv[1] - 1) as usize;
         let to = (mv[2] - 1) as usize;
-        for _ in 0..amount {
-            let crt = stacks[from].pop().unwrap();
-            stacks[to].push(crt);
+        if model == 9000 {
+            for _ in 0..amount {
+                let crt = stacks[from].pop().unwrap();
+                stacks[to].push(crt);
+            }
+        } else if model == 9001 {
+            let split_index = stacks[from].len() - amount;
+            let crt = stacks[from].split_off(split_index);
+            for e in crt {
+                stacks[to].push(e);
+            }
         }
     }
+}
+
+fn day5_1() -> String {
+    let text = fs::read_to_string("./input5").unwrap();
+    let (stack_str, moves_str) = text.split_once("\n\n").unwrap();
+    let mut stacks = get_stacks(stack_str);
+    let moves = get_moves(moves_str);
+    move_stacks(&mut stacks, moves, 9000);
 
     return stacks
         .iter()
@@ -204,8 +221,17 @@ fn day5_1() -> String {
         .collect::<String>();
 }
 
-fn day5_2() -> i32 {
-    return 0;
+fn day5_2() -> String {
+    let text = fs::read_to_string("./input5").unwrap();
+    let (stack_str, moves_str) = text.split_once("\n\n").unwrap();
+    let mut stacks = get_stacks(stack_str);
+    let moves = get_moves(moves_str);
+    move_stacks(&mut stacks, moves, 9001);
+
+    return stacks
+        .iter()
+        .map(|s| *s.last().unwrap())
+        .collect::<String>();
 }
 
 fn main() {
@@ -283,6 +309,6 @@ mod tests {
     #[test]
     fn test_day5_2() {
         let result = day5_2();
-        assert_eq!(result, 0);
+        assert_eq!(result, "BRZGFVBTJ");
     }
 }
