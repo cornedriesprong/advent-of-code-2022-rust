@@ -233,23 +233,28 @@ fn day5_2() -> String {
         .collect::<String>();
 }
 
-fn day6_1() -> i32 {
-    let chars: Vec<char> = fs::read_to_string("./input6").unwrap().chars().collect();
-    let offset = 3;
-    for i in 0..(chars.len() - offset) {
+fn find_marker(signal: Vec<char>, char_count: usize) -> usize {
+    let offset = char_count - 1;
+    for i in 0..(signal.len() - offset) {
         let mut set: HashSet<char> = HashSet::new();
-        for j in 0..4 {
-            set.insert(chars[i + j]);
+        for j in 0..char_count {
+            set.insert(signal[i + j]);
         }
-        if set.len() == 4 {
-            return (i + offset) as i32 + 1;
+        if set.len() == char_count {
+            return i + char_count;
         }
     }
     return 0;
 }
 
+fn day6_1() -> i32 {
+    let signal: Vec<char> = fs::read_to_string("./input6").unwrap().chars().collect();
+    find_marker(signal, 4) as i32
+}
+
 fn day6_2() -> i32 {
-    return 0;
+    let signal: Vec<char> = fs::read_to_string("./input6").unwrap().chars().collect();
+    find_marker(signal, 14) as i32
 }
 
 fn main() {
@@ -265,7 +270,7 @@ fn main() {
     day5_1();
     day5_2();
     day6_1();
-    day6_2();
+    println!("{}", day6_2());
 }
 
 #[cfg(test)]
