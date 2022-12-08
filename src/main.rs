@@ -233,15 +233,15 @@ fn day5_2() -> String {
         .collect::<String>();
 }
 
-fn find_marker(signal: Vec<char>, char_count: usize) -> usize {
-    let offset = char_count - 1;
+fn find_marker(signal: Vec<char>, marker_count: usize) -> usize {
+    let offset = marker_count - 1;
     for i in 0..(signal.len() - offset) {
         let mut set: HashSet<char> = HashSet::new();
-        for j in 0..char_count {
+        for j in 0..marker_count {
             set.insert(signal[i + j]);
         }
-        if set.len() == char_count {
-            return i + char_count;
+        if set.len() == marker_count {
+            return i + marker_count;
         }
     }
     return 0;
