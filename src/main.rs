@@ -126,10 +126,10 @@ fn day4_1() -> i32 {
         .lines()
         .map(|line| {
             let (a, b) = line.split_once(",").unwrap();
-            let lhs_min = a.split_once("-").unwrap().0.parse::<i32>().unwrap();
-            let lhs_max = a.split_once("-").unwrap().1.parse::<i32>().unwrap();
-            let rhs_min = b.split_once("-").unwrap().0.parse::<i32>().unwrap();
-            let rhs_max = b.split_once("-").unwrap().1.parse::<i32>().unwrap();
+            let lhs_min = a.split_once("-").unwrap().0.parse().unwrap();
+            let lhs_max = a.split_once("-").unwrap().1.parse().unwrap();
+            let rhs_min = b.split_once("-").unwrap().0.parse().unwrap();
+            let rhs_max = b.split_once("-").unwrap().1.parse().unwrap();
             fully_contained((lhs_min, lhs_max), (rhs_min, rhs_max))
         })
         .filter(|b| *b)
@@ -147,10 +147,10 @@ fn day4_2() -> i32 {
         .lines()
         .map(|line| {
             let (a, b) = line.split_once(",").unwrap();
-            let lhs_min = a.split_once("-").unwrap().0.parse::<i32>().unwrap();
-            let lhs_max = a.split_once("-").unwrap().1.parse::<i32>().unwrap();
-            let rhs_min = b.split_once("-").unwrap().0.parse::<i32>().unwrap();
-            let rhs_max = b.split_once("-").unwrap().1.parse::<i32>().unwrap();
+            let lhs_min = a.split_once("-").unwrap().0.parse().unwrap();
+            let lhs_max = a.split_once("-").unwrap().1.parse().unwrap();
+            let rhs_min = b.split_once("-").unwrap().0.parse().unwrap();
+            let rhs_max = b.split_once("-").unwrap().1.parse().unwrap();
             overlaps((lhs_min, lhs_max), (rhs_min, rhs_max))
         })
         .filter(|b| *b)
@@ -264,7 +264,8 @@ fn main() {
     day4_2();
     day5_1();
     day5_2();
-    println!("Day 6.1: {}", day6_1());
+    day6_1();
+    day6_2();
 }
 
 #[cfg(test)]
